@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Graph {
     private int sourceNode;
     private List<List<Integer>> adjMatrix;
