@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +37,13 @@ public class Util {
     }
 
     public static void writeResults(String fileName, List<Integer> results) {
-        try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8)) {
             for (int i = 0; i < results.size(); i++) {
                 int val = results.get(i);
                 if (val < Integer.MAX_VALUE) {
-                    writer.printf("Minimum distance to node %d is %d", i, val);
+                    writer.printf("Minimum distance to node %d is %d\n", i, val);
                 } else {
-                    writer.printf("Minimum distance to node %d is inf", i);
+                    writer.printf("Minimum distance to node %d is inf\n", i);
                 }
             }
         } catch (IOException e) {
