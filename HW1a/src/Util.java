@@ -1,4 +1,7 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,20 +36,5 @@ public class Util {
         }
 
         return new Graph(sourceNode, adjMatrix);
-    }
-
-    public static void writeResults(String fileName, List<Integer> results) {
-        try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
-            for (int i = 0; i < results.size(); i++) {
-                int val = results.get(i);
-                if (val < Integer.MAX_VALUE) {
-                    writer.printf("Minimum distance to node %d is %d", i, val);
-                } else {
-                    writer.printf("Minimum distance to node %d is inf", i);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
