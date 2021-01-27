@@ -6,11 +6,11 @@ public class Dijkstra {
     private Graph graph;
     private Node currNode;
     private List<Integer> nodeDistances;
-    private Set<Integer> visitedNodes;
+    private Set<Integer> visitedNodes = new HashSet<>();
     private AtomicBoolean threadFinished;
     private List<PriorityQueue<Node>> nodeQueue = new ArrayList<>();
 
-    public List<Integer> RunAlgo(Graph graph, int numThreads) throws InterruptedException {
+    public List<Integer> runAlgo(Graph graph, int numThreads) throws InterruptedException {
         this.graph = graph;
         threadFinished = new AtomicBoolean(false);
         nodeDistances = new ArrayList<>(graph.getNumNodes());
