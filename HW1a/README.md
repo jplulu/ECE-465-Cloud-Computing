@@ -13,6 +13,12 @@ An ```input.txt``` file that contains an adjacency matrix graph must be present 
 2 0 3
 0 4 0
 ```
+An input.txt file can be randomly generated as follows:
+```
+cd src/
+javac GenerateGraph.java
+java GenerateGraph <numberOfNodes>
+```
 To run the program:
 ```
 cd src/
