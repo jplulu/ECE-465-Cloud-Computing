@@ -40,7 +40,7 @@ public class Dijkstra {
         int excessNodes = graph.getNumNodes() % numThreads;
         // Create + Start threads
         for (int i = 0; i < numThreads; i++) {
-            startNode = endNode; //one node overlap to later connect subgraphs
+            startNode = endNode;
             endNode = startNode + subgraphSize;
             // if there are excess nodes after distributing, then some subgraphs get one node until all excess nodes gone
             if (excessNodes > 0) {
@@ -91,7 +91,7 @@ public class Dijkstra {
                         }
                     }
                 }
-                // if minNode not found b/c queues are empty, nothing more to do
+                // if minNode not found b/c queues are empty, the algorithm is finished
                 if (minNode == null){
                     isFinished.set(true);
                     return;
