@@ -6,7 +6,7 @@ This program is a parallelized implementation of the single-source Dijkstra's al
 An input.txt file that contains an adjacency matrix graph must be present in HW1a/. This file must specify the number of nodes, the source node, and the adjacency matrix itself in the format below:
 ```
 <number of nodes> <source node>
-0 -1 1
+0 0 1
 1 0 2
--1 1 0
+0 1 0
 ```
