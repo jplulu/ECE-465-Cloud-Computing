@@ -10,3 +10,9 @@ An ```input.txt``` file that contains an adjacency matrix graph must be present 
 1 0 2
 0 1 0
 ```
+To run the program:
+```
+cd src/
+javac Main.java
+java Main
+```
