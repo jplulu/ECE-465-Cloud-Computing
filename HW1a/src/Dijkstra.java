@@ -95,7 +95,7 @@ public class Dijkstra {
                         }
                     }
                 }
-                // if minNode not found b/c queues are empty, nothing more to do
+                // if minNode not found b/c queues are empty, the algorithm is finished
                 if (minNode == null){
                     isFinished.set(true);
                     return;

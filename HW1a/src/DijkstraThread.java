@@ -34,7 +34,9 @@ public class DijkstraThread extends Thread{
         while(!isFinished.get()) {
             int currNode = minNode.getNode();
             int currDistance = minNode.getDistance();
+            // Get all neighbors for the current node
             List<Integer> currNeighbors = graph.getAdjMatrix().get(currNode);
+            // Loop through all neighbors and update distance if neccessary
             for (int i = startNode; i < endNode; i++) {
                 if(currNeighbors.get(i) > 0 && !visitedNodes.contains(i)) {
                     int newDistance = currDistance + currNeighbors.get(i);
@@ -45,6 +47,7 @@ public class DijkstraThread extends Thread{
                 }
             }
             try {
+                //wait for all threads to finish their iteration
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();

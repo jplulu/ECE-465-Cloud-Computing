@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         Graph graph = Util.readGraph("./HW1a/input.txt");
         Dijkstra dijkstra = new Dijkstra();
+        // Run with 4 threads
         List<Integer> results = runDijkstra(graph, 4);
         System.out.println("DONE");
         System.out.println(results);
