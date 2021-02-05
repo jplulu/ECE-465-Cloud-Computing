@@ -1,3 +1,5 @@
+package edu.cooper.ece465;
+
 public class Node implements Comparable<Node> {
     private int node;
     private int distance;

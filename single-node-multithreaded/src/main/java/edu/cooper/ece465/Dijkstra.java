@@ -1,3 +1,5 @@
+package edu.cooper.ece465;
+
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +31,7 @@ public class Dijkstra {
         // Set starting node distance to 0
         nodeDistances.set(graph.getSourceNode(), 0);
 
-        // Find min node once the threads have finished one iteration of Dijkstra's using await
+        // Find min node once the threads have finished one iteration of main.java.edu.cooper.ece465.Dijkstra's using await
         FindMinNode findMinNode = new FindMinNode(nodeQueue, isFinished, visitedNodes, currNode);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(numThreads, findMinNode);
         // Break up graph and distribute among threads

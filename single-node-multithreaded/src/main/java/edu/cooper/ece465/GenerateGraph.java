@@ -1,14 +1,16 @@
+package edu.cooper.ece465;
+
 import java.io.*;
 import java.util.Random;
 
 public class GenerateGraph {
     public static void main(String[] args) throws IOException {
         if(args.length == 0){
-            System.out.println("Proper Usage is: java GenerateGraph [Number of Source Nodes]");
+            System.out.println("Proper Usage is: java main.java.edu.cooper.ece465.GenerateGraph [Number of Source Nodes]");
             System.exit(1);
         }
         Random random = new Random();
-        FileWriter fileWriter = new FileWriter("./HW1a/input.txt");
+        FileWriter fileWriter = new FileWriter("./single-node-multithreaded/input.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         try {
             // First lines for #nodes + value of source node (default to zero)
@@ -33,7 +35,7 @@ public class GenerateGraph {
                 bufferedWriter.newLine();
             }
         } catch (NumberFormatException e) {
-          System.out.println("Proper Usage is: java GenerateGraph [Number of Source Nodes].\nA number was not found in " +
+          System.out.println("Proper Usage is: java main.java.edu.cooper.ece465.GenerateGraph [Number of Source Nodes].\nA number was not found in " +
                   "the input for source nodes.");
           System.exit(2);
         }
