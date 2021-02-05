@@ -36,7 +36,7 @@ Nodesize > 3000 Nodes
 4 Thread > 2 Thread > 1 Thread
 With a larger graph size, the number of threads has a more significant impact on the run time. While four threads has the shorter run time, the difference in the runtime of 2 threads compared to 4 threads is not linear. It can be noted that the difference in times seems to increase as the number of nodes in the graph increases, indicating performance differences may be more evident with a larger graph size.
 
-According to Zilong Ye, the expected complexity of this parallel Dijkstra algorithm is O(v<sup>2</sup>/P + V * log(P)) where V is the number of nodes and P is the number of cores used. 
+According to Zilong Ye, the complexity of this parallel Dijkstra's algorithm is O(v<sup>2</sup>/P + V * log(P)) where V is the number of nodes and P is the number of cores used whereas the complexity of Dijkstra's algorithm is O(v^2).
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
