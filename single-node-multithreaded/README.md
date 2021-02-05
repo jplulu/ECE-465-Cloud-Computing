@@ -18,13 +18,18 @@ java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-wi
 ```
 ## Empirical Time analysis
 Number of Nodes: [1000, 2000, 3000, 4000, 5000, 6000, 7000]
+
 1 Thread: [52, 64, 152, 226, 342, 518, 821]
+
 2 Thread: [39, 53, 95, 158, 258, 327, 575]
+
 4 Thread: [48, 93, 108, 154, 222, 297, 498]
+
 
 Nodesize < 3000 Nodes
 1 Thread = 2 Thread < 4 Thread 
 With a small to medium size graph, a smaller amount of threads resulted in shorter run times. This may be attributed to the overhead caused by the context switching.
+
 
 Nodesize > 3000 Nodes
 4 Thread > 2 Thread > 1 Thread
