@@ -17,6 +17,7 @@ An ```input.txt``` file that contains an adjacency matrix graph is needed as inp
 
 To run the program:
 ```
+git clone https://github.com/jplulu/ECE-465-Cloud-Computing.git
 cd ECE-465-Cloud-Computing
 ./build.sh
 
