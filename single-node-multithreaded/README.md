@@ -18,8 +18,10 @@ cd ECE-465-Cloud-Computing
 # Single Node Multithreaded
 java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.Main
 ```
-## Empirical Time analysis (thread runtimes in milliseconds)
-Number of Nodes: [1000, 2000, 3000, 4000, 5000, 6000, 7000]
+## Time analysis
+Tests are done on the following number of nodes: [1000, 2000, 3000, 4000, 5000, 6000, 7000]
+
+Results for each test case in milliseconds:
 
 1 Thread: [52, 64, 152, 226, 342, 518, 821]
 
@@ -36,7 +38,7 @@ Nodesize > 3000 Nodes
 4 Thread > 2 Thread > 1 Thread
 With a larger graph size, the number of threads has a more significant impact on the run time. While four threads has the shorter run time, the difference in the runtime of 2 threads compared to 4 threads is not linear. It can be noted that the difference in times seems to increase as the number of nodes in the graph increases, indicating performance differences may be more evident with a larger graph size.
 
-According to Zilong Ye, the complexity of this parallel Dijkstra's algorithm is O(v<sup>2</sup>/P + V * log(P)) where V is the number of nodes and P is the number of cores used whereas the complexity of Dijkstra's algorithm is O(v^2).
+The complexity of this parallel Dijkstra's algorithm is O(V<sup>2</sup>/P + V * log(P)) where V is the number of nodes and P is the number of cores used whereas the complexity of Dijkstra's algorithm is O(v^2).
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
