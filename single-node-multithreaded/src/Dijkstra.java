@@ -89,7 +89,7 @@ public class Dijkstra {
                     if (!nodeQueue.get(i).isEmpty()) {
                         Node node = nodeQueue.get(i).peek();
                         //if minNode not found or current node smaller than minNode, set minNode as current node
-                        if (minNode == null || node.compareTo(minNode) < 0) {
+                        if (minNode == null || Objects.requireNonNull(node).compareTo(minNode) < 0) {
                             minNode = node;
                             index = i;
                         }
