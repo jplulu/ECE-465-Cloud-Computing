@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Util {
+    // Read an input file and return an adjacency matrix graph object
     public static Graph readGraph(String fileName) throws IOException {
         List<List<Integer>> adjMatrix = new ArrayList<>();
         int sourceNode;
@@ -35,7 +36,8 @@ public class Util {
 
         return new Graph(sourceNode, adjMatrix);
     }
-
+    
+    // Write the results of the algorithm to a file
     public static void writeResults(String fileName, List<Integer> results) {
         try (PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8)) {
             for (int i = 0; i < results.size(); i++) {
