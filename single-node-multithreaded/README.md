@@ -4,6 +4,7 @@ This program is a parallelized implementation of the single-source Dijkstra's al
 
 ## Algorithm Description
 Dijstras's Algorithm is an algorithm for finding the shortest paths between nodes in a graph. In a single threaded implementation, the algorithm iteratively traverses each node starting from the source node, updates the weights, and selects the node with the minimum weight as the source node for the next iteration. The algorithm terminates once all the nodes have been visited.
+
 In a multi-threaded implementation, the algorithm will take an adjacency matrix represented graph and break it up into subgroups of nodes; each of these subgroups will be assigned to a thread and processed. The threads all perform Dijkstra's on their respective chunks, updating the node weights locally, and putting the nodes into a global priority queue shared among the threads. Each thread is blocked upon its own completion of an iteration through the use of a CyclicBarrier in the Java concurrency library. Once all the threads finish executing, the shared priority queue is used to selected the global minimum node, which is then broadcasted to all threads to be used as the soruce node in the next iteration of the algorithm. The algorithm finishes once an unvisited global minimum node cannot be found. This information is stored in a global AtomicBoolean and updated at the end of each iteration. The program outputs the minimum distances from the source node to all other nodes.
 
 
