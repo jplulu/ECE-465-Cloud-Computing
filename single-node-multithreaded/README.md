@@ -25,9 +25,9 @@ java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-wi
 
 1 Thread: [52, 64, 152, 226, 342, 518, 821]
 
-2 Thread: [39, 53, 95, 158, 258, 327, 575]
+2 Threads: [39, 53, 95, 158, 258, 327, 575]
 
-4 Thread: [48, 93, 108, 154, 222, 297, 498]
+4 Threads: [48, 93, 108, 154, 222, 297, 498]
 
 
 **For node size < 3000 nodes**
