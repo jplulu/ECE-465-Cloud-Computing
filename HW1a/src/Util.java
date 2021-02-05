@@ -38,8 +38,9 @@ public class Util {
     }
     
     // Write the results of the algorithm to a file
-    public static void writeResults(String fileName, List<Integer> results) {
+    public static void writeResults(String fileName, List<Integer> results, long timetorun) {
         try (PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8)) {
+            writer.printf("Time elapsed: %d ms\n", timetorun);
             for (int i = 0; i < results.size(); i++) {
                 int val = results.get(i);
                 if (val < Integer.MAX_VALUE) {
@@ -47,6 +48,17 @@ public class Util {
                 } else {
                     writer.printf("Minimum distance to node %d is inf\n", i);
                 }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeRuntime(String fileName, List<List<Long>> runtimes, List<Integer> numNodelist) {
+        try (PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8)) {
+            writer.printf(numNodelist.toString() + "\n");
+            for (List<Long> runtime : runtimes) {
+                writer.printf(runtime.toString() + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
