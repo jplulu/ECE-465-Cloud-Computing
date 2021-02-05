@@ -8,7 +8,7 @@ public class GenerateGraph {
             System.exit(1);
         }
         Random random = new Random();
-        FileWriter fileWriter = new FileWriter("./HW1a/input.txt");
+        FileWriter fileWriter = new FileWriter("./single-node-multithreaded/input/input.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         try {
             // First lines for #nodes + value of source node (default to zero)
@@ -43,7 +43,7 @@ public class GenerateGraph {
     public static String genGraph(int numNodes) throws IOException {
         Random random = new Random();
         String filename = "input_" + numNodes + ".txt";
-        FileWriter fileWriter = new FileWriter("./HW1a/" + filename);
+        FileWriter fileWriter = new FileWriter("./single-node-multithreaded/input/" + filename);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         // First lines for #nodes + value of source node (default to zero)
         bufferedWriter.append(String.valueOf(numNodes)).append(" 0");

@@ -16,7 +16,7 @@ public class Main {
         List<Integer> nodelist = new ArrayList<>();
         for (int numNodes = 1000; numNodes <= 7000; numNodes += 1000) {
             String inputFilename = GenerateGraph.genGraph(numNodes);
-            Graph graph = Util.readGraph("./HW1a/" + inputFilename);
+            Graph graph = Util.readGraph("./single-node-multithreaded/input/" + inputFilename);
             Dijkstra dijkstra = new Dijkstra();
             // Run with 1 thread
             Instant start = Instant.now();
