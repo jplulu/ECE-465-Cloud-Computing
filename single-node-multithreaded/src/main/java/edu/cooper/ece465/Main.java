@@ -15,7 +15,8 @@ public class Main {
         timediff.add(oneThreadresults);
         timediff.add(twoThreadresults);
         timediff.add(fourThreadresults);
-        List<Integer> nodelist = new ArrayList<>();
+        List<Integer> numNodeslist = new ArrayList<>();
+        System.out.println("# Nodes    1 Thread    2 Thread    4 Thread");
         for (int numNodes = 1000; numNodes <= 7000; numNodes += 1000) {
             String inputFilename = GenerateGraph.genGraph(numNodes);
             Graph graph = Util.readGraph("./single-node-multithreaded/input/" + inputFilename);
@@ -42,9 +43,10 @@ public class Main {
             Util.writeResults("output_four" + numNodes + ".txt", results, FourThreads);
             fourThreadresults.add(FourThreads);
 
-            nodelist.add(numNodes);
+            numNodeslist.add(numNodes);
+            System.out.format("%7d    %8d    %8d    %8d\n", numNodes, OneThread, TwoThreads, FourThreads);
         }
-        Util.writeRuntime("runtime_outputs.txt", timediff, nodelist);
+        Util.writeRuntime("runtime_outputs.txt", timediff, numNodeslist);
     }
 
     private static List<Integer> runDijkstra(Graph graph, int numThreads) throws InterruptedException {
