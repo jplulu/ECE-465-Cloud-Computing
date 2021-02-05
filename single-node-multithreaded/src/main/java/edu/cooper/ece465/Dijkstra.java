@@ -31,7 +31,7 @@ public class Dijkstra {
         // Set starting node distance to 0
         nodeDistances.set(graph.getSourceNode(), 0);
 
-        // Find min node once the threads have finished one iteration of main.java.edu.cooper.ece465.Dijkstra's using await
+        // Find min node once the threads have finished one iteration of Dijkstra's using await
         FindMinNode findMinNode = new FindMinNode(nodeQueue, isFinished, visitedNodes, currNode);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(numThreads, findMinNode);
         // Break up graph and distribute among threads
@@ -91,7 +91,7 @@ public class Dijkstra {
                     if (!nodeQueue.get(i).isEmpty()) {
                         Node node = nodeQueue.get(i).peek();
                         //if minNode not found or current node smaller than minNode, set minNode as current node
-                        if (minNode == null || node.compareTo(minNode) < 0) {
+                        if (minNode == null || Objects.requireNonNull(node).compareTo(minNode) < 0) {
                             minNode = node;
                             index = i;
                         }
