@@ -15,6 +15,15 @@ An ```input.txt``` file that contains an adjacency matrix graph is needed as inp
 0 4 0
 ```
 
+To run the program:
+```
+cd ECE-465-Cloud-Computing
+./build.sh
+
+# Single Node Multithreaded
+java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.Main
+```
+
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
