@@ -8,7 +8,7 @@ public class Coordinator {
     private Graph graph;
     private Node currNode;
     private List<Integer> nodeDistances;
-    private Set<Integer> visitedNodes = new HashSet<>();
+    private HashSet<Integer> visitedNodes = new HashSet<>();
     // Using an atomicboolean mutable so we can change the value in the threads
     private AtomicBoolean isFinished;
     private List<PriorityQueue<Node>> nodeQueue = new ArrayList<>();
