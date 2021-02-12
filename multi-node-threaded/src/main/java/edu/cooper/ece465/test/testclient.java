@@ -33,7 +33,7 @@ public class testclient {
         Graph graph = Util.readGraph("./multi-node-threaded/input.txt");
 
         System.out.println("Sending messages to the ServerSocket");
-        objectOutputStream.writeObject(new InitMessage(graph,node,0, 86 ));
+//        objectOutputStream.writeObject(new InitMessage(graph,node,0, 86 ));
 
         System.out.println("Closing socket and terminating program.");
         socket.close();

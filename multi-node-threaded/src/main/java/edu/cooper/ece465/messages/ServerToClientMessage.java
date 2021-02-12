@@ -7,17 +7,17 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 
 public class ServerToClientMessage implements Serializable {
-    private final int currNode;
+    private final Node currNode;
     private final HashSet<Integer> visitedNode;
     private final PriorityQueue<Node> priorityQueue;
 
-    public ServerToClientMessage(int currNode, HashSet<Integer> visitedNode, PriorityQueue<Node> priorityQueue) {
+    public ServerToClientMessage(Node currNode, HashSet<Integer> visitedNode, PriorityQueue<Node> priorityQueue) {
         this.currNode = currNode;
         this.visitedNode = visitedNode;
         this.priorityQueue = priorityQueue;
     }
 
-    public int getCurrNode() {
+    public Node getCurrNode() {
         return currNode;
     }
 

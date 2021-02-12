@@ -1,8 +1,5 @@
 package edu.cooper.ece465.test;
 
-import edu.cooper.ece465.messages.ClientToServerMessage;
-import edu.cooper.ece465.messages.InitMessage;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,11 +19,14 @@ public class testserver {
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
         // read the list of messages from the socket
-        InitMessage listOfMessages = (InitMessage) objectInputStream.readObject();
-        System.out.println(listOfMessages.getGraph().getAdjMatrix());
+        while(true) {
+            if (objectInputStream.readObject() == null) {
+                System.out.println("null");
+            }
+        }
+//
+//        InitMessage listOfMessages = (InitMessage) objectInputStream.readObject();
+//        System.out.println(listOfMessages.getGraph().getAdjMatrix());
 
-        System.out.println("Closing sockets.");
-        ss.close();
-        socket.close();
     }
 }
