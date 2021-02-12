@@ -10,8 +10,16 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class Worker {
-    public static void main(String[] args) {
-        try(Socket s = new Socket("localhost", 420)){
+    private final int portNumber;
+
+    public Worker(int portNumber) {
+        this.portNumber = portNumber;
+    }
+
+    public void start() {
+        System.out.println("Worker started on port " + portNumber);
+        try(Socket s = new Socket("localhost", portNumber)){
+            System.out.println("Connection establish with server on port " + portNumber);
             ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
 
@@ -36,6 +44,7 @@ public class Worker {
                     endNode = initData.getEndNode();
                     nodeDistances = initData.getNodeDist();
                     initDone = true;
+                    System.out.println("Worker initialized");
                 } catch (EOFException ignored) {
                 }
             }
@@ -43,8 +52,10 @@ public class Worker {
             while(!isFinished) {
                 try {
                     itrData = (ServerToClientMessage) objectInputStream.readObject();
+//                    System.out.println(itrData.getCurrNode());
                     if (itrData.getCurrNode() == null) {
                         isFinished = true;
+                        objectOutputStream.writeObject(nodeDistances);
                     } else {
                         minNode = itrData.getCurrNode();
                         visitedNodes = itrData.getVisitedNode();
@@ -56,6 +67,7 @@ public class Worker {
                         List<Integer> currNeighbors = graph.getAdjMatrix().get(currNode);
                         // Loop through all neighbors and update distance if neccessary
                         for (int i = startNode; i < endNode; i++) {
+//                            System.out.println(nodeDistances);
                             if(currNeighbors.get(i) > 0 && !visitedNodes.contains(i)) {
                                 int newDistance = currDistance + currNeighbors.get(i);
                                 if (newDistance < nodeDistances.get(i)) {
@@ -66,8 +78,11 @@ public class Worker {
                         }
                         objectOutputStream.writeObject(nodeQueue);
                         objectOutputStream.reset();
+//                        System.out.println(nodeQueue);
                     }
-                } catch (EOFException ignored) {
+                } catch (EOFException e) {
+                    System.out.println("Server socket closed.");
+                    break;
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

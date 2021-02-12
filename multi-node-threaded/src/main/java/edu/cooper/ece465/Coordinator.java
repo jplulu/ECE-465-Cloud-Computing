@@ -30,7 +30,6 @@ public class Coordinator {
             nodeDistances.add(i, Integer.MAX_VALUE);
         // Set starting node distance to 0
         nodeDistances.set(graph.getSourceNode(), 0);
-
         // Find min node once the threads have finished one iteration of Dijkstra's using await
         FindMinNode findMinNode = new FindMinNode(nodeQueue, isFinished, visitedNodes, currNode);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(numThreads, findMinNode);
@@ -50,8 +49,8 @@ public class Coordinator {
             }
 
             // Create new thread and run dijkstra on subgraph
-            Thread DThread = new DijkstraThread(graph, startNode, endNode, visitedNodes, nodeQueue.get(i), nodeDistances,
-                    currNode, cyclicBarrier, isFinished);
+            Thread DThread = new CoordinatorThread(graph, startNode, endNode, visitedNodes, nodeQueue.get(i), nodeDistances,
+                    currNode, cyclicBarrier, isFinished, 420+i);
             DThread.start();
             // Add new thread to queue
             threads.add(DThread);
@@ -88,6 +87,7 @@ public class Coordinator {
 
                 for (int i = 0; i < nodeQueue.size(); i++){
                     // if thread's queue is not empty, get first node in priorityqueue which will be node w/ smallest dist
+//                    System.out.println("Coordinator: " + nodeQueue.get(i));
                     if (!nodeQueue.get(i).isEmpty()) {
                         Node node = nodeQueue.get(i).peek();
                         //if minNode not found or current node smaller than minNode, set minNode as current node

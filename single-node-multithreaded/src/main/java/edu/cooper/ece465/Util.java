@@ -41,7 +41,7 @@ public class Util {
     
     // Write the results of the algorithm to a file
     public static void writeResults(String fileName, List<Integer> results, long timetorun) {
-        try (PrintWriter writer = new PrintWriter("./single-node-multithreaded/output/" + fileName, StandardCharsets.UTF_8)) {
+        try (PrintWriter writer = new PrintWriter("./" + fileName, StandardCharsets.UTF_8)) {
             writer.printf("Time elapsed: %d ms\n", timetorun);
             for (int i = 0; i < results.size(); i++) {
                 int val = results.get(i);

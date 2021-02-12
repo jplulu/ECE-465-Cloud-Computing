@@ -27,6 +27,10 @@ public class Node implements Comparable<Node>, Serializable {
         this.node = node;
     }
 
+    public String toString(){
+        return String.valueOf(node) + " " + String.valueOf(distance);
+    }
+
     @Override
     public int compareTo(Node node) {
         return Double.compare(this.distance, node.distance);

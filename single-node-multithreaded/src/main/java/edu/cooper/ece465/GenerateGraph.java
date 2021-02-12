@@ -10,7 +10,7 @@ public class GenerateGraph {
             System.exit(1);
         }
         Random random = new Random();
-        FileWriter fileWriter = new FileWriter("./single-node-multithreaded/input/input.txt");
+        FileWriter fileWriter = new FileWriter("./input.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         try {
             // First lines for #nodes + value of source node (default to zero)
