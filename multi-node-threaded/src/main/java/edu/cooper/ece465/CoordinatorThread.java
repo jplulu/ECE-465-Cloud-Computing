@@ -7,7 +7,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class DijkstraThread extends Thread{
+public class CoordinatorThread extends Thread{
     private Graph graph;
     private int startNode;
     private int endNode;
@@ -19,7 +19,7 @@ public class DijkstraThread extends Thread{
     private AtomicBoolean isFinished;
 
 
-    public DijkstraThread(Graph graph, int startNode, int endNode, Set<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, Set<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;

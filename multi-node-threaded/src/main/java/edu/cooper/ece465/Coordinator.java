@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Dijkstra {
+public class Coordinator {
     private Graph graph;
     private Node currNode;
     private List<Integer> nodeDistances;
