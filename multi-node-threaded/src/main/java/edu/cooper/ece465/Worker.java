@@ -1,43 +1,54 @@
 package edu.cooper.ece465;
 
+import edu.cooper.ece465.messages.InitMessage;
+import edu.cooper.ece465.messages.ServerToClientMessage;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 public class Worker {
     public static void main(String[] args) {
         try(Socket s = new Socket("localhost", 420)){
-            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
             ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
 
             boolean initDone = false;
-            String initData;
-            String itrData;
+            InitMessage initData;
+            ServerToClientMessage itrData;
 
-            Graph graph;
-            int startNode;
-            int endNode;
-            Set<Integer> visitedNodes;
+            Graph graph = null;
+            int startNode = 0;
+            int endNode = 0;
+            HashSet<Integer> visitedNodes;
             PriorityQueue<Node> nodeQueue;
-            List<Integer> nodeDistances;
+            List<Integer> nodeDistances = null;
             Node minNode;
             boolean isFinished = false;
 
             while(!initDone) {
-                if ((initData = br.readLine()) != null) {
-                    // TODO: set init data by parsing json
+                try {
+                    initData = (InitMessage) objectInputStream.readObject();
+                    graph = initData.getGraph();
+                    startNode = initData.getStartNode();
+                    endNode = initData.getEndNode();
+                    nodeDistances = initData.getNodeDist();
                     initDone = true;
+                } catch (EOFException ignored) {
                 }
             }
 
             while(!isFinished) {
-                if ((itrData = br.readLine()) != null) {
-                    if (itrData.equals("exit")) {
+                try {
+                    itrData = (ServerToClientMessage) objectInputStream.readObject();
+                    if (itrData.getCurrNode() == null) {
                         isFinished = true;
                     } else {
+                        minNode = itrData.getCurrNode();
+                        visitedNodes = itrData.getVisitedNode();
+                        nodeQueue = itrData.getPriorityQueue();
 
                         int currNode = minNode.getNode();
                         int currDistance = minNode.getDistance();
@@ -45,7 +56,7 @@ public class Worker {
                         List<Integer> currNeighbors = graph.getAdjMatrix().get(currNode);
                         // Loop through all neighbors and update distance if neccessary
                         for (int i = startNode; i < endNode; i++) {
-                            if (currNeighbors.get(i) > 0 && !visitedNodes.contains(i)) {
+                            if(currNeighbors.get(i) > 0 && !visitedNodes.contains(i)) {
                                 int newDistance = currDistance + currNeighbors.get(i);
                                 if (newDistance < nodeDistances.get(i)) {
                                     nodeDistances.set(i, newDistance);
@@ -53,13 +64,15 @@ public class Worker {
                                 }
                             }
                         }
+                        objectOutputStream.writeObject(nodeQueue);
+                        objectOutputStream.reset();
                     }
+                } catch (EOFException ignored) {
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
     }
-
 }
