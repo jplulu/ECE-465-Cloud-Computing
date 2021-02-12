@@ -1,6 +1,8 @@
 package edu.cooper.ece465;
 
-public class Node implements Comparable<Node> {
+import java.io.Serializable;
+
+public class Node implements Comparable<Node>, Serializable {
     private int node;
     private int distance;
 
