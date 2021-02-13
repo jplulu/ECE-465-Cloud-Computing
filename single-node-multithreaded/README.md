@@ -1,4 +1,4 @@
-# HW1 - Parallelized Single-source Dijkstra's Algorithm
+# HW1 - Single-node Multi-threaded Single-source Dijkstra's Algorithm
 
 This program is a parallelized implementation of the single-source Dijkstra's algorithm using Java threads.
 
