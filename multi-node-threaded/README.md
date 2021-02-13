@@ -18,5 +18,32 @@ java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependenc
 ```
 Then run the worker on each node:
 ```
-java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain
+java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain [420 + nodenumber]
 ```
+Example of worker commands with 4 nodes:
+```
+java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain 420
+```
+```
+java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain 421
+```
+```
+java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain 422
+```
+```
+java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain 423
+```
+
+
+# Time Analysis
+Tests were conducted with 10, 100, and 1000 vertices.
+
+Results for each test case in milliseconds
+|#Nodes		|10 vertices			|100 vertices			|1000 vertices |
+| --- | --- | --- | --- |
+|Single		|107ms			|1793ms			|255836ms |
+|Four		|99ms				|832ms			|25651ms |
+
+
+There was a large time increase when moving from single-node local to a multi-node networked algorithm. We attribute this to both I/O times as well as certain limitations with the data structures we used such as the inability for changes in the priority queue of one thread to be reflected on the main thread.
+For 10 vertices, we see that there is little to no difference between the 1 vs 4 nodes and the small difference in time is negligable enough to state that there is no performance difference. When we move to 100 vertices, it can be clearly seen that there is about a roughly 2x performance increase moving from 1 node to 4 nodes. WIth 1000 vertices in the graph, the performance jumps to 10x. The significant jump can be attributed to network I/O delays which are incurred every iteration of the algorithm.
