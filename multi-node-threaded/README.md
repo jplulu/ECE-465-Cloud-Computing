@@ -46,3 +46,8 @@ Results for each test case in milliseconds
 
 
 There was a large time increase when moving from single-node local to a multi-node networked algorithm. We attribute this largely to I/O times as well as certain limitations with the data structures we used such as the inefficiency of updating certaining lists, priority queues in particular. In terms of performace, for 10 vertices, we see that there is little to no difference between the 1 vs 4 nodes and the small difference in time is negligable enough to state that there is no performance difference. When we move to 100 vertices, it can be clearly seen that there is about a roughly 2x performance increase moving from 1 node to 4 nodes. WIth 1000 vertices in the graph, the performance jumps to 10x indicating that the algorithm is much more effective on larger graphs.
+
+## References
+https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
+
+https://cse.buffalo.edu/faculty/miller/Courses/CSE633/Ye-Fall-2012-CSE633.pdf
