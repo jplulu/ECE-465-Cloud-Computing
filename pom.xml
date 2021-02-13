@@ -27,8 +27,10 @@
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
 		<exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
-		<ece465-commons.version>${project.version}</ece465-commons.version>
+
+<!--		<ece465-commons.version>${project.version}</ece465-commons.version>-->
 		<single-node-multithreaded.version>${project.version}</single-node-multithreaded.version>
+		<multi-node-threaded.version>${project.version}</multi-node-threaded.version>
 
 		<log4j.version>1.2.17</log4j.version>
 		<slf4j.version>1.7.30</slf4j.version>
@@ -165,9 +167,9 @@
 			folder -->
 		<profile>
 			<id>classpath-deps</id>
-			<modules>
-				<module>commons</module>
-			</modules>
+<!--			<modules>-->
+<!--				<module>commons</module>-->
+<!--			</modules>-->
 			<build>
 				<plugins>
 					<plugin>
@@ -234,15 +236,26 @@
 					<groupId>org.projectlombok</groupId>
 					<artifactId>lombok</artifactId>
 				</dependency>
+				<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+				<dependency>
+					<groupId>com.google.code.gson</groupId>
+					<artifactId>gson</artifactId>
+					<version>2.8.6</version>
+				</dependency>
 
-<!--				<dependency>-->
+				<!--				<dependency>-->
 <!--					<groupId>edu.cooper.ece465</groupId>-->
 <!--					<artifactId>commons</artifactId>-->
 <!--				</dependency>-->
 
 				<dependency>
 					<groupId>edu.cooper.ece465</groupId>
-					<artifactId>single_node_multithreaded</artifactId>
+					<artifactId>single-node-multithreaded</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>edu.cooper.ece465</groupId>
+					<artifactId>multi-node-threaded</artifactId>
 				</dependency>
 
 			</dependencies>
@@ -258,7 +271,7 @@
 			<modules>
 <!--				<module>commons</module>-->
 				<module>single-node-multithreaded</module>
-<!--				<module>dist-image</module>-->
+				<module>multi-node-threaded</module>
 			</modules>
 		</profile>
 
@@ -266,9 +279,9 @@
 			uber commons) -->
 		<profile>
 			<id>commons</id>
-			<modules>
-				<module>commons</module>
-			</modules>
+<!--			<modules>-->
+<!--				<module>commons</module>-->
+<!--			</modules>-->
 		</profile>
 
 		<!-- Build only the non-commons jars (can be used in combo with 'uber' 
@@ -277,6 +290,7 @@
 			<id>non_commons</id>
 			<modules>
 				<module>single-node-multithreaded</module>
+				<module>multi-node-threaded</module>
 			</modules>
 		</profile>
 
@@ -313,15 +327,20 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>edu.cooper.ece465</groupId>
-				<artifactId>commons</artifactId>
-				<version>${ece465-commons.version}</version>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>edu.cooper.ece465</groupId>-->
+<!--				<artifactId>commons</artifactId>-->
+<!--				<version>${ece465-commons.version}</version>-->
+<!--			</dependency>-->
 			<dependency>
 				<groupId>edu.cooper.ece465</groupId>
 				<artifactId>single-node-multithreaded</artifactId>
 				<version>${single-node-multithreaded.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>edu.cooper.ece465</groupId>
+				<artifactId>multi-node-threaded</artifactId>
+				<version>${multi-node-threaded.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -376,6 +395,12 @@
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
 			</dependency>
-        </dependencies>
+			<!-- https://mvnrepository.com/artifact/org.json/json -->
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20201115</version>
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 </project>

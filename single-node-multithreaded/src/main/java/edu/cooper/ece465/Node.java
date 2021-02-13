@@ -1,6 +1,8 @@
 package edu.cooper.ece465;
 
-public class Node implements Comparable<Node> {
+import java.io.Serializable;
+
+public class Node implements Comparable<Node>, Serializable {
     private int node;
     private int distance;
 
@@ -23,6 +25,10 @@ public class Node implements Comparable<Node> {
 
     public void setNode(int node) {
         this.node = node;
+    }
+
+    public String toString(){
+        return String.valueOf(node) + " " + String.valueOf(distance);
     }
 
     @Override
