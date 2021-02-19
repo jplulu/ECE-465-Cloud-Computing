@@ -20,16 +20,17 @@ public class Worker {
     // Using an atomicboolean mutable so we can change the value in the threads
     private AtomicBoolean isFinished;
     private final int portNumber;
+    private final String host;
 
-
-    public Worker(int portNumber) {
+    public Worker(String host, int portNumber) {
+        this.host = host;
         this.portNumber = portNumber;
     }
 
     public void start(int numThreads) {
         System.out.println("Worker started on port " + portNumber);
-        try(Socket s = new Socket("localhost", portNumber)){
-            System.out.println("Connection establish with server on port " + portNumber);
+        try(Socket s = new Socket(host, portNumber)){
+            System.out.println("Connection establish with " + host + "::" + portNumber);
             ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
 

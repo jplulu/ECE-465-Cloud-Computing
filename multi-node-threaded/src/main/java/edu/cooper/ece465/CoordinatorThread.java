@@ -1,5 +1,7 @@
 package edu.cooper.ece465;
 
+
+import edu.cooper.ece465.messages.NodeMessage;
 import edu.cooper.ece465.messages.InitMessage;
 import edu.cooper.ece465.messages.ServerToClientMessage;
 
@@ -15,31 +17,29 @@ public class CoordinatorThread extends Thread{
     private Graph graph;
     private int startNode;
     private int endNode;
-    private HashSet<Integer> visitedNodes;
-    private PriorityQueue<Node> nodeQueue;
     private List<Integer> nodeDistances;
-    private Node minNode;
+    private NodeMessage minNode;
     private CyclicBarrier barrier;
     private AtomicBoolean isFinished;
     private int portNumber;
+    private PriorityQueue<NodeMessage> localMinNode;
 
 
-    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, List<Integer> nodeDistances, NodeMessage minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<NodeMessage> localMinNodes) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
-        this.visitedNodes = visitedNodes;
-        this.nodeQueue = nodeQueue;
         this.nodeDistances = nodeDistances;
         this.minNode = minNode;
         this.barrier = barrier;
         this.isFinished = isFinished;
         this.portNumber = portNumber;
+        this.localMinNode = localMinNodes;
     }
 
     @Override
     public void run() {
-        List <Integer> final_nodeDist = new ArrayList<>();
+        List <Integer> final_nodeDist;
         System.out.println("Establishing connection on port " + portNumber);
         try(ServerSocket serversocket = new ServerSocket(portNumber)){
             //establish connection w/ client node
@@ -54,27 +54,37 @@ public class CoordinatorThread extends Thread{
 
             objectOutputStream.writeObject(new InitMessage(graph, startNode, endNode));
             objectOutputStream.reset();
+
+            boolean initloop = true;
             while (!isFinished.get()) {
-                //send info
-                objectOutputStream.writeObject(new ServerToClientMessage(minNode, visitedNodes, nodeQueue));
-                objectOutputStream.reset();
-
-                //wait for node response
-                //override priority queue
-                PriorityQueue<Node> tempnodeQueue = (PriorityQueue<Node>)objectInputStream.readObject();
-                nodeQueue.clear();
-                while (!tempnodeQueue.isEmpty()) {
-                    nodeQueue.add(tempnodeQueue.remove());
+                if (!initloop) {
+                    //send info
+                    objectOutputStream.writeObject(minNode);
+                    objectOutputStream.reset();
                 }
+                initloop = false;
+                //wait for node response
+                NodeMessage nodeResponse = (NodeMessage)objectInputStream.readObject();
 
-
+                if (nodeResponse.getMinNode() != null) {
+                    localMinNode.add(nodeResponse);
+                }
+//                PriorityQueue<Node> tempnodeQueue = nodeResponse.getPriorityQueue();
+//                nodeQueue.clear();
+//                while (!tempnodeQueue.isEmpty()) {
+//                    nodeQueue.add(tempnodeQueue.remove());
+//                }
 //                System.out.println("Thread: " + nodeQueue);
                 //wait for other threads to finish as well
                 barrier.await();
+
             }
-            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
-            objectOutputStream.reset();
+//            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
+//            objectOutputStream.reset();
             //loop & update corresponding range of nodes
+            objectOutputStream.writeObject(minNode);
+            objectOutputStream.reset();
+
             final_nodeDist = (List<Integer>) objectInputStream.readObject();
 //            System.out.println(final_nodeDist);
             for (int i = startNode; i < endNode; i++) {
