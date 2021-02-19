@@ -2,7 +2,6 @@ package edu.cooper.ece465;
 
 import edu.cooper.ece465.messages.InitMessage;
 import edu.cooper.ece465.messages.NodeMessage;
-import edu.cooper.ece465.messages.ServerToClientMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -65,6 +64,7 @@ public class Worker {
             for (int i = 0; i < numThreads; i++){
                 threads.get(i).join();
             }
+            objectOutputStream.writeObject(nodeDistances);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -102,7 +102,6 @@ public class Worker {
     }
 
     public static class FindMinNodeLocal implements Runnable {
-
         private List<PriorityQueue<Node>> nodeQueue;
         private AtomicBoolean isFinished;
         private Set<Integer> visitedNodes;
@@ -128,8 +127,7 @@ public class Worker {
                 int index = 0;
 
                 for (int i = 0; i < nodeQueue.size(); i++){
-                    // if thread's queue is not empty, get first node in priorityqueue which will be node w/ smallest dist
-//                    System.out.println("Coordinator: " + nodeQueue.get(i));
+                    // if thread's queue is not empty, get first node in priority queue which will be node w/ smallest dist
                     if (!nodeQueue.get(i).isEmpty()) {
                         Node node = nodeQueue.get(i).peek();
                         //if minNode not found or current node smaller than minNode, set minNode as current node
@@ -148,10 +146,15 @@ public class Worker {
 
                         NodeMessage nodeMessage = (NodeMessage)objectInputStream.readObject();
                         Node globalMinNode = nodeMessage.getMinNode();
-                        visitedNodes.add(globalMinNode.getNode());
-                        currNode.setNode(globalMinNode.getNode());
-                        currNode.setDistance(globalMinNode.getDistance());
-                        nodeQueue.get(index).remove();
+                        if (globalMinNode != null) {
+                            visitedNodes.add(globalMinNode.getNode());
+                            currNode.setNode(globalMinNode.getNode());
+                            currNode.setDistance(globalMinNode.getDistance());
+                            if (nodeMessage.getStartNode() == startNode)
+                                nodeQueue.get(index).remove();
+                        } else {
+                            isFinished.set(true);
+                        }
                         return;
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
@@ -161,7 +164,6 @@ public class Worker {
                     // min node found but visited already, remove
                     nodeQueue.get(index).remove();
                 }
-
             }
         }
     }
