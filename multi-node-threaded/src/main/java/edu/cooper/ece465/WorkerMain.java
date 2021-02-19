@@ -15,8 +15,8 @@ public class WorkerMain {
 
         Worker worker = new Worker(args[0], Integer.parseInt(args[1]));
 
-        Instant start = Instant.now();
-        worker.start(2);
+        Instant start = Instant.now;
+        worker.start(4); 
         Instant end = Instant.now();
         System.out.println("Took " + Duration.between(start, end).toMillis());
     }
