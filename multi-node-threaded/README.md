@@ -43,7 +43,6 @@ For second revision, we were able to significantly reduce runtime by lowering th
 
 In the second revision, we modified the protocol by performing the processing of priority queues locally on the worker nodes and sending the local minimum vertices of each worker to the coordinator, which then determines the global minimum vertex and broadcasts it back to the worker nodes. This significantly reduced the network overhead since only a single vertex is being sent each iteration instead of lists of vertices.
 
-# Time Analysis - Second Revision
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
