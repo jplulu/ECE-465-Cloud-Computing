@@ -34,7 +34,11 @@ Results for each test case in milliseconds
 
 There was a large time increase when moving from single-node local to a multi-node networked algorithm. We attribute this largely to I/O times as well as certain limitations with the data structures we used such as the inefficiency of updating certaining lists, priority queues in particular. In terms of performace, for 10 vertices, we see that there is little to no difference between the 1 vs 4 nodes and the small difference in time is negligable enough to state that there is no performance difference. When we move to 100 vertices, it can be clearly seen that there is about a roughly 2x performance increase moving from 1 node to 4 nodes. WIth 1000 vertices in the graph, the performance jumps to 10x indicating that the algorithm is much more effective on larger graphs.
 
+# Second Revision Update
+For second revision, we were able to significantly reduce runtime by lowering the amount of data sent over the network, resulting in less network latency and processing need. To achieve this, we modified the communication protocol between the coordinator and the workers. In the first revision, the workers sent priority queues of vertices to the coordinator and the coordinator would determine the vertex with the minimum distance, update the priority queues, and send them back to the workers. This resulted in huge network overhead due to the processing of large lists.
+In the second revision, we modified the protocol by performing the processing of priority queues locally on the worker nodes and sending the local minimum vertices of each worker to the coordinator, which then determines the global minimum vertex and broadcasts it back to the worker nodes. This significantly reduced the network overhead since only a single vertex is being sent each iteration instead of lists of vertices.
 
+# Time Analysis - Second Revision
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
