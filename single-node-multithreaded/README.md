@@ -18,7 +18,9 @@ cd ECE-465-Cloud-Computing
 # Single Node Multithreaded
 java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.Main
 ```
-The program first creates a file with a graph of a specified node size and saves this file to single-node-multithreaded/input/. The parallel Dijkstra's algorithm will run 3 times using this graph, each run using more threads. Once the algorithm has finished running, both the shortest paths found and the algorithm run time will be saved to files. The shortest path results will be placed in single-node-multithreaded/output/ while the run time is currently saved to ECE-465-Cloud-Computing/. After parallel Dijkstra's finishes running on one graph, another graph is created with more nodes and the process repeats until the created graph node size reaches 7000.
+
+The program first creates a file with a graph of a specified node size and saves this file to ```single-node-multithreaded/input/```. The parallel Dijkstra's algorithm will run 3 times using this graph, each run using more threads. Once the algorithm has finished running, both the shortest paths found and the algorithm run time will be saved to files. The shortest path results will be placed in ```single-node-multithreaded/output/``` while the run time is currently saved to ```ECE-465-Cloud-Computing/```. After parallel Dijkstra's finishes running on one graph, another graph is created with more nodes and the process repeats until the created graph node size reaches 7000.
+
 
 ## Time analysis
 **Tests are done on the following number of nodes**: [1000, 2000, 3000, 4000, 5000, 6000, 7000]
