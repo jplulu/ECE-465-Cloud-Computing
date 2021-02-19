@@ -32,8 +32,8 @@ Tests were conducted with 10, 100, and 1000 vertices.
 Results for each test case in milliseconds
 |#Nodes		|10 vertices			|100 vertices			|1000 vertices |
 | --- | --- | --- | --- |
-|Single		|107ms			|1793ms			|255836ms |
-|Four		|99ms				|832ms			|25651ms |
+|Single		|97ms			|1693ms			|254836ms |
+|Four		|89ms				|732ms			|24651ms |
 
 
 There was a large time increase when moving from single-node local to a multi-node networked algorithm. We attribute this largely to I/O times as well as certain limitations with the data structures we used such as the inefficiency of updating certaining lists, priority queues in particular. In terms of performace, for 10 vertices, we see that there is little to no difference between the 1 vs 4 nodes and the small difference in time is negligable enough to state that there is no performance difference. When we move to 100 vertices, it can be clearly seen that there is about a roughly 2x performance increase moving from 1 node to 4 nodes. WIth 1000 vertices in the graph, the performance jumps to 10x indicating that the algorithm is much more effective on larger graphs.
@@ -43,6 +43,14 @@ For second revision, we were able to significantly reduce runtime by lowering th
 
 In the second revision, we modified the protocol by performing the processing of priority queues locally on the worker nodes and sending the local minimum vertices of each worker to the coordinator, which then determines the global minimum vertex and broadcasts it back to the worker nodes. This significantly reduced the network overhead since only a single vertex is being sent each iteration instead of lists of vertices.
 
+# Time Analysis - Second Revision
+Tested with 100 & 1000 vertices
+|#Nodes		|10 vertices			|100 vertices			|1000 vertices |
+| --- | --- | --- | --- |
+|Single		|13ms			|55ms			|1782ms |
+|Four		|16ms				|97ms			|1536ms |
+
+We were able to see a large time improvement with our second revision. Most notably, the shift from the previous 1000 vertices test to the current iteration. Across all tests, we were able to achieve a performance increase of at least sevenfold. Interestingly, the decrease in overall run time resulted in the run time differences between single and multi node decreasing.
 
 ## References
 https://en.wikipedia.org/wiki/Parallel_single-source_shortest_path_algorithm
