@@ -1,24 +1,21 @@
 package edu.cooper.ece465;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-
 public class WorkerMain {
     public static void main(String[] args) {
 
-        if (args.length != 2 ){
-            System.out.println("java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain [IP of Coordinator] [Coordinator Port]");
+        int numThreads = 1;
+        if (args.length != 2 && args.length != 3 ){
+            System.out.println("java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain [IP of Coordinator] [Coordinator Port] [Optional: Number of threads]");
             System.out.println("Error: Wrong number of arguments provided.");
             return;
         }
-
+        if (args.length == 3) {
+            numThreads = Integer.parseInt(args[2]);
+        }
         Worker worker = new Worker(args[0], Integer.parseInt(args[1]));
 
-        Instant start = Instant.now;
-        worker.start(4); 
-        Instant end = Instant.now();
-        System.out.println("Took " + Duration.between(start, end).toMillis());
+        long runtime = worker.start(numThreads);
+        System.out.println("Took " + runtime);
     }
 }
 

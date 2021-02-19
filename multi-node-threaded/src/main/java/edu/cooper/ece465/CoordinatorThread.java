@@ -3,7 +3,6 @@ package edu.cooper.ece465;
 
 import edu.cooper.ece465.messages.NodeMessage;
 import edu.cooper.ece465.messages.InitMessage;
-import edu.cooper.ece465.messages.ServerToClientMessage;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -69,29 +68,19 @@ public class CoordinatorThread extends Thread{
                 if (nodeResponse.getMinNode() != null) {
                     localMinNode.add(nodeResponse);
                 }
-//                PriorityQueue<Node> tempnodeQueue = nodeResponse.getPriorityQueue();
-//                nodeQueue.clear();
-//                while (!tempnodeQueue.isEmpty()) {
-//                    nodeQueue.add(tempnodeQueue.remove());
-//                }
-//                System.out.println("Thread: " + nodeQueue);
                 //wait for other threads to finish as well
                 barrier.await();
 
             }
-//            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
-//            objectOutputStream.reset();
-            //loop & update corresponding range of nodes
+
             objectOutputStream.writeObject(minNode);
             objectOutputStream.reset();
 
             final_nodeDist = (List<Integer>) objectInputStream.readObject();
-//            System.out.println(final_nodeDist);
             for (int i = startNode; i < endNode; i++) {
                 nodeDistances.set(i, final_nodeDist.get(i));
             }
             socket.close();
-//            System.out.println("Dijkstra finished, socket closed.");
 
         } catch (IOException | ClassNotFoundException | InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();

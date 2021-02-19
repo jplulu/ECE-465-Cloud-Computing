@@ -2,8 +2,9 @@ package edu.cooper.ece465;
 
 import edu.cooper.ece465.messages.NodeMessage;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -20,6 +21,7 @@ public class Coordinator {
         this.graph = graph;
         isFinished = new AtomicBoolean(false);
         nodeDistances = new ArrayList<>(graph.getNumNodes());
+        currNode = new NodeMessage(null, 0);
         // Init threads + queues for threads
         List<Thread> threads = new ArrayList<>();
         // Preset distances to infinity
@@ -74,44 +76,6 @@ public class Coordinator {
             this.localMinNode = localMinNode;
         }
 
-//        @Override
-//        public void run() {
-//            while (true) {
-//                Node minNode = null;
-//                int index = 0;
-//
-//                for (int i = 0; i < nodeQueue.size(); i++){
-//                    // if thread's queue is not empty, get first node in priorityqueue which will be node w/ smallest dist
-////                    System.out.println("Coordinator: " + nodeQueue.get(i));
-//                    if (!nodeQueue.get(i).isEmpty()) {
-//                        Node node = nodeQueue.get(i).peek();
-//                        //if minNode not found or current node smaller than minNode, set minNode as current node
-//                        if (minNode == null || Objects.requireNonNull(node).compareTo(minNode) < 0) {
-//                            minNode = node;
-//                            index = i;
-//                        }
-//                    }
-//                }
-//                // if minNode not found b/c queues are empty, the algorithm is finished
-//                if (minNode == null){
-//                    isFinished.set(true);
-//                    return;
-//                }
-//                else if(!visitedNodes.contains(minNode.getNode())) {
-//                    // min node found and not yet visited, set currNode as minNode then remove minNode from the queue
-//                    visitedNodes.add(minNode.getNode());
-//                    currNode.setNode(minNode.getNode());
-//                    currNode.setDistance(minNode.getDistance());
-//                    nodeQueue.get(index).remove();
-//                    return;
-//                }
-//                else {
-//                    // min node found but visited already, remove
-//                    nodeQueue.get(index).remove();
-//                }
-//
-//            }
-//        }
         @Override
         public void run() {
             if(localMinNode.size() == 0) {

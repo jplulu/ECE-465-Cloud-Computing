@@ -53,6 +53,7 @@ public class WorkerThread extends Thread {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
+                return;
             }
         }
     }
