@@ -5,6 +5,10 @@ import edu.cooper.ece465.messages.NodeMessage;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,8 +31,10 @@ public class Worker {
         this.portNumber = portNumber;
     }
 
-    public void start(int numThreads) {
+    public long start(int numThreads) {
         System.out.println("Worker started on port " + portNumber);
+        Instant start = Instant.now();
+        Instant end = Instant.now();
         try(Socket s = new Socket(host, portNumber)){
             System.out.println("Connection establish with " + host + "::" + portNumber);
             ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
@@ -40,10 +46,12 @@ public class Worker {
             FindMinNodeLocal findMinNodeLocal = new FindMinNodeLocal(nodeQueue, isFinished, visitedNodes, currNode, startNode, objectInputStream, objectOutputStream);
             CyclicBarrier cyclicBarrier = new CyclicBarrier(numThreads, findMinNodeLocal);
 
+            start = Instant.now();
+
             int subGraphSize = (endNode - startNode) / numThreads;
             int excessNodes = (endNode - startNode) % numThreads;
             // Create + Start threads
-            for (int i = startNode; i < numThreads; i++) {
+            for (int i = 0; i < numThreads; i++) {
                 endNode = startNode + subGraphSize;
                 // if there are excess nodes after distributing, then some subgraphs get one node until all excess nodes gone
                 if (excessNodes > 0) {
@@ -66,10 +74,14 @@ public class Worker {
                 threads.get(i).join();
             }
             objectOutputStream.writeObject(nodeDistances);
+
+            end = Instant.now();
+
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
+        return Duration.between(start, end).toMillis();
     }
 
     private void init(ObjectInputStream objectInputStream, int numThreads) {
@@ -159,6 +171,8 @@ public class Worker {
                         return;
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
+                        isFinished.set(true);
+                        return;
                     }
                 }
                 else {

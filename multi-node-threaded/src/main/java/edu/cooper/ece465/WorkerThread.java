@@ -1,5 +1,7 @@
 package edu.cooper.ece465;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -53,6 +55,7 @@ public class WorkerThread extends Thread {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
+                return;
             }
         }
     }

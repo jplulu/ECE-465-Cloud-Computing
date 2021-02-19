@@ -20,6 +20,7 @@ public class Coordinator {
         this.graph = graph;
         isFinished = new AtomicBoolean(false);
         nodeDistances = new ArrayList<>(graph.getNumNodes());
+        currNode = new NodeMessage(null, 0);
         // Init threads + queues for threads
         List<Thread> threads = new ArrayList<>();
         // Preset distances to infinity
