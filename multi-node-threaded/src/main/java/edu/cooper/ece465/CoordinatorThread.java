@@ -25,9 +25,10 @@ public class CoordinatorThread extends Thread{
     private CyclicBarrier barrier;
     private AtomicBoolean isFinished;
     private int portNumber;
+    private PriorityQueue<Node> localMinNode;
 
 
-    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<Node> localMinNodes) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
@@ -38,11 +39,12 @@ public class CoordinatorThread extends Thread{
         this.barrier = barrier;
         this.isFinished = isFinished;
         this.portNumber = portNumber;
+        this.localMinNode = localMinNodes;
     }
 
     @Override
     public void run() {
-        List <Integer> final_nodeDist = new ArrayList<>();
+        List <Integer> final_nodeDist;
         System.out.println("Establishing connection on port " + portNumber);
         try(ServerSocket serversocket = new ServerSocket(portNumber)){
             //establish connection w/ client node
@@ -63,14 +65,17 @@ public class CoordinatorThread extends Thread{
                 objectOutputStream.reset();
 
                 //wait for node response
-                //override priority queue
-                PriorityQueue<Node> tempnodeQueue = (PriorityQueue<Node>)objectInputStream.readObject();
-                nodeQueue.clear();
-                while (!tempnodeQueue.isEmpty()) {
-                    nodeQueue.add(tempnodeQueue.remove());
+                ClientToServerMessage nodeResponse = (ClientToServerMessage)objectInputStream.readObject();
+
+                Node locMinNode = nodeResponse.getMinNode();
+                if (locMinNode != null) {
+                    localMinNode.add(locMinNode);
                 }
-
-
+//                PriorityQueue<Node> tempnodeQueue = nodeResponse.getPriorityQueue();
+//                nodeQueue.clear();
+//                while (!tempnodeQueue.isEmpty()) {
+//                    nodeQueue.add(tempnodeQueue.remove());
+//                }
 //                System.out.println("Thread: " + nodeQueue);
                 //wait for other threads to finish as well
                 barrier.await();
