@@ -1,7 +1,7 @@
 package edu.cooper.ece465;
 
-import edu.cooper.ece465.messages.ClientToServerMessage;
 import edu.cooper.ece465.messages.InitMessage;
+import edu.cooper.ece465.messages.NodeMessage;
 import edu.cooper.ece465.messages.ServerToClientMessage;
 
 import java.io.*;
@@ -144,18 +144,19 @@ public class Worker {
                 if(minNode == null || !visitedNodes.contains(minNode.getNode())) {
                     // min node found and not yet visited, set currNode as minNode then remove minNode from the queue
                     try {
-                        objectOutputStream.writeObject(new ClientToServerMessage(minNode, startNode));
+                        objectOutputStream.writeObject(new NodeMessage(minNode, startNode));
                         objectOutputStream.reset();
-                    } catch (IOException e) {
+
+                        NodeMessage nodeMessage = (NodeMessage)objectInputStream.readObject();
+                        Node globalMinNode = nodeMessage.getMinNode();
+                        visitedNodes.add(globalMinNode.getNode());
+                        currNode.setNode(globalMinNode.getNode());
+                        currNode.setDistance(globalMinNode.getDistance());
+                        nodeQueue.get(index).remove();
+                        return;
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-
-
-                    visitedNodes.add(minNode.getNode());
-                    currNode.setNode(minNode.getNode());
-                    currNode.setDistance(minNode.getDistance());
-                    nodeQueue.get(index).remove();
-                    return;
                 }
                 else {
                     // min node found but visited already, remove
