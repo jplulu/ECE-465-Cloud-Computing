@@ -24,7 +24,7 @@ Then run the worker on each node:
 ```
 java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.WorkerMain [IP of Coordinator] [Coordinator Port] [Optional: Number of threads]
 ```
-Output of the algorithm will be generated in a file called ```multioutput.txt``` in ```ECE-465-Cloud-Computing```
+Output of the algorithm will be generated in a file called ```multioutput.txt``` in ```ECE-465-Cloud-Computing/```
 
 # Time Analysis - First Revision
 Tests were conducted with 10, 100, and 1000 vertices.
