@@ -13,7 +13,7 @@ public class Coordinator {
     private AtomicBoolean isFinished;
     private List<PriorityQueue<Node>> nodeQueue = new ArrayList<>();
 
-    public List<Integer> runAlgo(Graph graph, int numThreads) throws InterruptedException {
+    public List<Integer> runAlgo(Graph graph, int numThreads, int[] portList) throws InterruptedException {
         // Init vars
         this.graph = graph;
         isFinished = new AtomicBoolean(false);
@@ -50,7 +50,7 @@ public class Coordinator {
 
             // Create new thread and run dijkstra on subgraph
             Thread DThread = new CoordinatorThread(graph, startNode, endNode, visitedNodes, nodeQueue.get(i), nodeDistances,
-                    currNode, cyclicBarrier, isFinished, 420+i);
+                    currNode, cyclicBarrier, isFinished, portList[i]);
             DThread.start();
             // Add new thread to queue
             threads.add(DThread);

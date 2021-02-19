@@ -11,15 +11,17 @@ import java.util.PriorityQueue;
 
 public class Worker {
     private final int portNumber;
+    private final String host;
 
-    public Worker(int portNumber) {
+    public Worker(String host, int portNumber) {
+        this.host = host;
         this.portNumber = portNumber;
     }
 
     public void start() {
         System.out.println("Worker started on port " + portNumber);
-        try(Socket s = new Socket("localhost", portNumber)){
-            System.out.println("Connection establish with server on port " + portNumber);
+        try(Socket s = new Socket(host, portNumber)){
+            System.out.println("Connection establish with " + host + "::" + portNumber);
             ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
 
