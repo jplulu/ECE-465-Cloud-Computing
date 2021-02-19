@@ -12,6 +12,10 @@ git clone https://github.com/jplulu/ECE-465-Cloud-Computing.git
 cd ECE-465-Cloud-Computing
 ./build.sh
 ```
+An input file must be present for the algorithm to run. To generate the input graph:
+```
+java -cp single-node-multithreaded/target/single-node-multithreaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.GenerateGraph [Number of nodes]
+```
 Run the coordinator first:
 ```
 java -cp multi-node-threaded/target/multi-node-threaded-0.0.1-jar-with-dependencies.jar edu.cooper.ece465.CoordinatorMain [Number of nodes] [Ports corresponding to # of nodes]
