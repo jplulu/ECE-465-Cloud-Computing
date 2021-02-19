@@ -1,10 +1,8 @@
 package edu.cooper.ece465;
 
-import edu.cooper.ece465.messages.ClientToServerMessage;
+import edu.cooper.ece465.messages.NodeMessage;
 import edu.cooper.ece465.messages.InitMessage;
 import edu.cooper.ece465.messages.ServerToClientMessage;
-import netscape.javascript.JSObject;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,22 +16,18 @@ public class CoordinatorThread extends Thread{
     private Graph graph;
     private int startNode;
     private int endNode;
-    private HashSet<Integer> visitedNodes;
-    private PriorityQueue<Node> nodeQueue;
     private List<Integer> nodeDistances;
-    private Node minNode;
+    private NodeMessage minNode;
     private CyclicBarrier barrier;
     private AtomicBoolean isFinished;
     private int portNumber;
-    private PriorityQueue<Node> localMinNode;
+    private PriorityQueue<NodeMessage> localMinNode;
 
 
-    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<Node> localMinNodes) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, List<Integer> nodeDistances, NodeMessage minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<NodeMessage> localMinNodes) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
-        this.visitedNodes = visitedNodes;
-        this.nodeQueue = nodeQueue;
         this.nodeDistances = nodeDistances;
         this.minNode = minNode;
         this.barrier = barrier;
@@ -59,17 +53,20 @@ public class CoordinatorThread extends Thread{
 
             objectOutputStream.writeObject(new InitMessage(graph, startNode, endNode));
             objectOutputStream.reset();
+
+            boolean initloop = true;
             while (!isFinished.get()) {
-                //send info
-                objectOutputStream.writeObject(new ServerToClientMessage(minNode, visitedNodes, nodeQueue));
-                objectOutputStream.reset();
-
+                if (!initloop) {
+                    //send info
+                    objectOutputStream.writeObject(minNode);
+                    objectOutputStream.reset();
+                }
+                initloop = false;
                 //wait for node response
-                ClientToServerMessage nodeResponse = (ClientToServerMessage)objectInputStream.readObject();
+                NodeMessage nodeResponse = (NodeMessage)objectInputStream.readObject();
 
-                Node locMinNode = nodeResponse.getMinNode();
-                if (locMinNode != null) {
-                    localMinNode.add(locMinNode);
+                if (nodeResponse.getMinNode() != null) {
+                    localMinNode.add(nodeResponse);
                 }
 //                PriorityQueue<Node> tempnodeQueue = nodeResponse.getPriorityQueue();
 //                nodeQueue.clear();
@@ -79,10 +76,14 @@ public class CoordinatorThread extends Thread{
 //                System.out.println("Thread: " + nodeQueue);
                 //wait for other threads to finish as well
                 barrier.await();
+
             }
-            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
-            objectOutputStream.reset();
+//            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
+//            objectOutputStream.reset();
             //loop & update corresponding range of nodes
+            objectOutputStream.writeObject(minNode);
+            objectOutputStream.reset();
+
             final_nodeDist = (List<Integer>) objectInputStream.readObject();
 //            System.out.println(final_nodeDist);
             for (int i = startNode; i < endNode; i++) {
