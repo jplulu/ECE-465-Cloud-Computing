@@ -10,7 +10,7 @@ public class WorkerMain {
         Worker worker = new Worker(Integer.parseInt(args[0]));
 
         Instant start = Instant.now();
-        worker.start();
+        worker.start(4);
         Instant end = Instant.now();
         System.out.println("Took " + Duration.between(start, end).toMillis());
     }
