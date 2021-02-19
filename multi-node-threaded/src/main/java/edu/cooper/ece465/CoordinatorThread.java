@@ -55,7 +55,7 @@ public class CoordinatorThread extends Thread{
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
 
-            objectOutputStream.writeObject(new InitMessage(graph, nodeDistances, startNode, endNode));
+            objectOutputStream.writeObject(new InitMessage(graph, startNode, endNode));
             objectOutputStream.reset();
             while (!isFinished.get()) {
                 //send info
