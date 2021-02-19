@@ -1,16 +1,15 @@
 package edu.cooper.ece465;
 
+import edu.cooper.ece465.messages.ClientToServerMessage;
 import edu.cooper.ece465.messages.InitMessage;
+import edu.cooper.ece465.messages.ServerToClientMessage;
 import netscape.javascript.JSObject;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,9 +24,10 @@ public class CoordinatorThread extends Thread{
     private Node minNode;
     private CyclicBarrier barrier;
     private AtomicBoolean isFinished;
+    private int portNumber;
 
 
-    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, HashSet<Integer> visitedNodes, PriorityQueue<Node> nodeQueue, List<Integer> nodeDistances, Node minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
@@ -37,50 +37,56 @@ public class CoordinatorThread extends Thread{
         this.minNode = minNode;
         this.barrier = barrier;
         this.isFinished = isFinished;
+        this.portNumber = portNumber;
     }
 
     @Override
     public void run() {
-        try(ServerSocket serversocket = new ServerSocket(420)){
+        List <Integer> final_nodeDist = new ArrayList<>();
+        System.out.println("Establishing connection on port " + portNumber);
+        try(ServerSocket serversocket = new ServerSocket(portNumber)){
             //establish connection w/ client node
             Socket socket = serversocket.accept();
+            System.out.println("Connection established on port " + portNumber);
 
             // Setup write to client
-            PrintStream printStream = new PrintStream(socket.getOutputStream());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             // Setup read from client
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-            do {
-                printStream.println("Init commence.");
-                objectOutputStream.writeObject(new InitMessage(graph, nodeDistances, startNode, endNode));
-                printStream.println("Init complete.");
-            } while (bufferedReader.readLine() != "Init received.");
 
-//            printStream.println("Main Loop started.");
-////            int[] rec_visitNode = null;
-////            String[] rec_priorqueue;
-//            while (isFinished.get() != true) {
-//                //send info
-//                objectOutputStream.writeObject(nodeQueue);
-//                objectOutputStream.writeObject(visitedNodes);
-//                objectOutputStream.writeObject(minNode);
-//
-//                //wait for node response
-//
-////                rec_visitNode = (int[])objectInputStream.readObject();
-////                rec_priorqueue = (String[])objectInputStream.readObject();
-//
-//                //CONVERT PRIORITY QUEUE INFO INTO PRIORITY QUEUE
-////                nodeQueue = rec_priorqueue;
-//
-//                //wait for other threads to finish as well
-//                barrier.await();
-//            }
-            printStream.println("EXIT");
+            objectOutputStream.writeObject(new InitMessage(graph, nodeDistances, startNode, endNode));
+            objectOutputStream.reset();
+            while (!isFinished.get()) {
+                //send info
+                objectOutputStream.writeObject(new ServerToClientMessage(minNode, visitedNodes, nodeQueue));
+                objectOutputStream.reset();
 
-        } catch (IOException e) {
+                //wait for node response
+                //override priority queue
+                PriorityQueue<Node> tempnodeQueue = (PriorityQueue<Node>)objectInputStream.readObject();
+                nodeQueue.clear();
+                while (!tempnodeQueue.isEmpty()) {
+                    nodeQueue.add(tempnodeQueue.remove());
+                }
+
+
+//                System.out.println("Thread: " + nodeQueue);
+                //wait for other threads to finish as well
+                barrier.await();
+            }
+            objectOutputStream.writeObject(new ServerToClientMessage(null, null, null));
+            objectOutputStream.reset();
+            //loop & update corresponding range of nodes
+            final_nodeDist = (List<Integer>) objectInputStream.readObject();
+//            System.out.println(final_nodeDist);
+            for (int i = startNode; i < endNode; i++) {
+                nodeDistances.set(i, final_nodeDist.get(i));
+            }
+            socket.close();
+//            System.out.println("Dijkstra finished, socket closed.");
+
+        } catch (IOException | ClassNotFoundException | InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
 
