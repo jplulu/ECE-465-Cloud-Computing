@@ -7,18 +7,12 @@ import java.util.List;
 
 public class InitMessage implements Serializable {
     private final Graph graph;
-    private final List<Integer> nodeDist;
     private final int startNode, endNode;
 
-    public InitMessage(Graph graph, List<Integer> n, int startNode, int endNode) {
-        this.nodeDist = n;
+    public InitMessage(Graph graph, int startNode, int endNode) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
-    }
-
-    public List<Integer> getNodeDist() {
-        return nodeDist;
     }
 
     public Graph getGraph() {

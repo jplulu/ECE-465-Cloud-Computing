@@ -57,7 +57,7 @@ public class CoordinatorThread extends Thread{
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
 
-            objectOutputStream.writeObject(new InitMessage(graph, nodeDistances, startNode, endNode));
+            objectOutputStream.writeObject(new InitMessage(graph, startNode, endNode));
             objectOutputStream.reset();
             while (!isFinished.get()) {
                 //send info
@@ -94,29 +94,5 @@ public class CoordinatorThread extends Thread{
         } catch (IOException | ClassNotFoundException | InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
-
-
-//        while(!isFinished.get()) {
-//            int currNode = minNode.getNode();
-//            int currDistance = minNode.getDistance();
-//            // Get all neighbors for the current node
-//            List<Integer> currNeighbors = graph.getAdjMatrix().get(currNode);
-//            // Loop through all neighbors and update distance if neccessary
-//            for (int i = startNode; i < endNode; i++) {
-//                if(currNeighbors.get(i) > 0 && !visitedNodes.contains(i)) {
-//                    int newDistance = currDistance + currNeighbors.get(i);
-//                    if (newDistance < nodeDistances.get(i)) {
-//                        nodeDistances.set(i, newDistance);
-//                        nodeQueue.add(new Node(i, newDistance));
-//                    }
-//                }
-//            }
-//            try {
-//                //wait for all threads to finish their iteration
-//                barrier.await();
-//            } catch (InterruptedException | BrokenBarrierException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 }
