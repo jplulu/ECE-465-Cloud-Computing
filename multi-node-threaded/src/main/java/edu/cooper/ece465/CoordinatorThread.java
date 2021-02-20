@@ -7,6 +7,8 @@ import edu.cooper.ece465.messages.InitMessage;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -22,9 +24,12 @@ public class CoordinatorThread extends Thread{
     private AtomicBoolean isFinished;
     private int portNumber;
     private PriorityQueue<NodeMessage> localMinNode;
+    private final byte[] md5hash;
+    private final String path;
 
 
-    public CoordinatorThread(Graph graph, int startNode, int endNode, List<Integer> nodeDistances, NodeMessage minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<NodeMessage> localMinNodes) {
+    public CoordinatorThread(Graph graph, int startNode, int endNode, List<Integer> nodeDistances,
+                             NodeMessage minNode, CyclicBarrier barrier, AtomicBoolean isFinished, int portNumber, PriorityQueue<NodeMessage> localMinNodes, byte[] md5Hash, String path) {
         this.graph = graph;
         this.startNode = startNode;
         this.endNode = endNode;
@@ -34,6 +39,8 @@ public class CoordinatorThread extends Thread{
         this.isFinished = isFinished;
         this.portNumber = portNumber;
         this.localMinNode = localMinNodes;
+        this.md5hash = md5Hash;
+        this.path = path;
     }
 
     @Override
@@ -48,10 +55,10 @@ public class CoordinatorThread extends Thread{
             // Setup write to client
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             // Setup read from client
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
 
-            objectOutputStream.writeObject(new InitMessage(graph, startNode, endNode));
+            objectOutputStream.writeObject(new InitMessage(startNode, endNode, path, md5hash));
             objectOutputStream.reset();
 
             boolean initloop = true;
@@ -77,13 +84,18 @@ public class CoordinatorThread extends Thread{
             objectOutputStream.reset();
 
             final_nodeDist = (List<Integer>) objectInputStream.readObject();
+
+
             for (int i = startNode; i < endNode; i++) {
                 nodeDistances.set(i, final_nodeDist.get(i));
             }
             socket.close();
 
-        } catch (IOException | ClassNotFoundException | InterruptedException | BrokenBarrierException e) {
+        } catch (ClassNotFoundException | InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("I/O ERROR EXITING");
+            System.exit(-1);
         }
     }
 }

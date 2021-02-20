@@ -1,23 +1,28 @@
 package edu.cooper.ece465.messages;
 
-import edu.cooper.ece465.Graph;
-
 import java.io.Serializable;
-import java.util.List;
 
 public class InitMessage implements Serializable {
-    private final Graph graph;
     private final int startNode, endNode;
 
-    public InitMessage(Graph graph, int startNode, int endNode) {
-        this.graph = graph;
-        this.startNode = startNode;
-        this.endNode = endNode;
+    public String getFilename() {
+        return filename;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public byte[] getMd5hash() {
+        return md5hash;
     }
+
+    private String filename;
+    private byte[] md5hash;
+
+    public InitMessage(int startNode, int endNode, String filename, byte[] md5hash) {
+        this.startNode = startNode;
+        this.endNode = endNode;
+        this.filename = filename;
+        this.md5hash = md5hash;
+    }
+
 
     public int getStartNode() {
         return startNode;
