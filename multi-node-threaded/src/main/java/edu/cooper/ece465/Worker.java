@@ -3,10 +3,12 @@ package edu.cooper.ece465;
 import edu.cooper.ece465.messages.InitMessage;
 import edu.cooper.ece465.messages.NodeMessage;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -37,19 +39,22 @@ public class Worker {
         Instant end = Instant.now();
         try(Socket s = new Socket(host, portNumber)){
             System.out.println("Connection establish with " + host + "::" + portNumber);
-            ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
 
-            init(objectInputStream, numThreads);
+            if (init(objectInputStream, numThreads) == -1) {
+                return -1;
+            }
             List<Thread> threads = new ArrayList<>();
 
             FindMinNodeLocal findMinNodeLocal = new FindMinNodeLocal(nodeQueue, isFinished, visitedNodes, currNode, startNode, objectInputStream, objectOutputStream);
             CyclicBarrier cyclicBarrier = new CyclicBarrier(numThreads, findMinNodeLocal);
 
-            start = Instant.now();
+
 
             int subGraphSize = (endNode - startNode) / numThreads;
             int excessNodes = (endNode - startNode) % numThreads;
+            start = Instant.now();
             // Create + Start threads
             for (int i = 0; i < numThreads; i++) {
                 endNode = startNode + subGraphSize;
@@ -74,6 +79,7 @@ public class Worker {
                 threads.get(i).join();
             }
             objectOutputStream.writeObject(nodeDistances);
+            objectOutputStream.reset();
 
             end = Instant.now();
 
@@ -84,14 +90,28 @@ public class Worker {
         return Duration.between(start, end).toMillis();
     }
 
-    private void init(ObjectInputStream objectInputStream, int numThreads) {
+    private int init(ObjectInputStream objectInputStream, int numThreads) {
         boolean initDone = false;
         InitMessage initData;
 
         while(!initDone) {
             try {
                 initData = (InitMessage) objectInputStream.readObject();
-                this.graph = initData.getGraph();
+                byte[] md5Hash = initData.getMd5hash();
+                String path = initData.getFilename();
+
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(Files.readAllBytes(Paths.get(path)));
+                byte[] localmd5Hash = md.digest();
+
+                if (Arrays.equals(localmd5Hash, md5Hash)){
+                    this.graph = Util.readGraph(path);
+                }
+                else{
+                    System.out.println("ERROR: File md5 hash does not match. Exiting ...");
+                    return -1;
+                }
+
                 this.startNode = initData.getStartNode();
                 this.endNode = initData.getEndNode();
                 this.isFinished = new AtomicBoolean(false);
@@ -108,10 +128,12 @@ public class Worker {
                 }
                 initDone = true;
                 System.out.println("Worker initialized");
-            } catch (IOException | ClassNotFoundException e) {
+                return 0;
+            } catch (IOException | ClassNotFoundException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
         }
+        return -1;
     }
 
     public static class FindMinNodeLocal implements Runnable {

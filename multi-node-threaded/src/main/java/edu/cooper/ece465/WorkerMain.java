@@ -15,7 +15,9 @@ public class WorkerMain {
         Worker worker = new Worker(args[0], Integer.parseInt(args[1]));
 
         long runtime = worker.start(numThreads);
-        System.out.println("Took " + runtime);
+        if (runtime != -1) {
+            System.out.println("Took " + runtime);
+        }
     }
 }
 
